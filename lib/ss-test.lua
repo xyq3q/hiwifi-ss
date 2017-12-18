@@ -2,7 +2,7 @@
 -- test if ss is working
 --
 
-local host, port = "www.youtube.com", 443
+local host, port = "twitter.com", 443
 local socket = require("socket")
 local tcp = assert(socket.tcp())
 tcp:settimeout(2);
