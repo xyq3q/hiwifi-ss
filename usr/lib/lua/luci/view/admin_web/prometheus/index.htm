@@ -180,6 +180,7 @@ local i18n = require "luci.i18n"
               <!--保存按钮-->
               <div class="panel-btn-bar" id="shadowsocks_btn_box">
                 <a href="javascript:;" class="btn" id="submit_btn">保存</a>
+                <a href="javascript:;" class="btn" id="update_btn">更新list</a>
                 <div class="G-panel-loading"
                      style="width:20px;height: 20px;min-height: 1px;margin-left: 5px;display: none;"
                      id="loading_ss_setup"></div>
@@ -565,6 +566,14 @@ $(function(){
 			$("#submit_btn").attr("disabled",false);
 		})
 	});
+  $("#update_btn").click(function(){
+    $("#loading_ss_setup").show();
+    $("#update_btn").attr("disabled",true);
+    $.get('<%=luci.dispatcher.build_url("api", "prometheus","update_file")%>',function(){
+      $("#loading_ss_setup").hide();
+      $("#update_btn").attr("disabled",false);
+    })
+  })
   $(".J_twx_view a").removeClass('current')
   $(".J_twx_view a:last").addClass('current')
 });

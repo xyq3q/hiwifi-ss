@@ -33,6 +33,8 @@ function index()
     --   升级
     entry({ "api", "prometheus", "check_ss_updates" }, call("check_ss_updates"), _(""), 608)
     entry({ "api", "prometheus", "upgrade_ss" }, call("upgrade_ss"), _(""), 608)
+
+    entry({ "api", "prometheus", "update_file" }, call("update_file"), _(""), 609)
 end
 
 
@@ -45,6 +47,14 @@ function json_return(content)
 	luci_http.write_json(content, true)
 end
 
+function update_file()
+    local result = {}
+    result["code"] = 0
+    luci.sys.exec("cd /tmp && curl -k -o dnsmasq.conf https://raw.githubusercontent.com/xyq3q/hiwifi-ss/master/dnsmasq.conf && cp dnsmasq.conf /etc/ && rm dnsmasq.conf")
+    luci.sys.exec("cd /tmp && curl -k -o gw-shadowsocks.dnslist https://raw.githubusercontent.com/xyq3q/hiwifi-ss/master/etc/gw-shadowsocks/gw-shadowsocks.dnslist && cp gw-shadowsocks.dnslist /etc/gw-shadowsocks/ && rm gw-shadowsocks.dnslist")
+    luci.sys.exec("/etc/init.d/dnsmasq restart")
+    json_return(result)
+end
 
 function check_ss_updates()
     local latest_version = luci.sys.exec('curl -k https://api.github.com/repos/xyq3q/hiwifi-ss/releases/latest -s | grep "tag_name" | awk "{ print $2 }" | sed s/\"//g | sed s/,//g')
